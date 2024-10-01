@@ -3,8 +3,11 @@ import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/font_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/resources/values_manager.dart';
+import 'package:ecommerce_app/features/main_layout/categories/presentation/manager/categories_cubit.dart';
 import 'package:ecommerce_app/features/main_layout/categories/presentation/widgets/category_card_item.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'sub_category_item.dart';
 
@@ -13,40 +16,75 @@ class SubCategoriesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      flex: 2,
-      child: CustomScrollView(
-        slivers: <Widget>[
-          // category title
-          SliverToBoxAdapter(
-            child: Text(
-              'Laptops & Electronics',
-              style: getBoldStyle(
-                  color: ColorManager.primary, fontSize: FontSize.s14),
-            ),
-          ),
-          // the category card
-          SliverToBoxAdapter(
-            child: CategoryCardItem("Laptops & Electronics",
-                ImageAssets.categoryCardImage, goToCategoryProductsListScreen),
-          ),
-          // the grid view of the subcategories
-          SliverGrid(
-              delegate: SliverChildBuilderDelegate(
-                childCount: 26,
-                (context, index) => SubCategoryItem(
-                    'Watches',
-                    ImageAssets.subcategoryCardImage,
+    return BlocBuilder<CategoriesCubit, CategoriesState>(
+      buildWhen: (previous, current) {
+        if (current is SelectNewCategoryState) {
+          return true;
+        }
+        return false;
+      },
+      builder: (context, state) {
+        return Expanded(
+          flex: 2,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              // category title
+              SliverToBoxAdapter(
+                child: Text(
+                  CategoriesCubit.get(context).selectedCategory?.name ?? "",
+                  style: getBoldStyle(
+                      color: ColorManager.primary, fontSize: FontSize.s14),
+                ),
+              ),
+              // the category card
+              SliverToBoxAdapter(
+                child: CategoryCardItem(
+                    CategoriesCubit.get(context).selectedCategory?.name ?? "",
+                    CategoriesCubit.get(context).selectedCategory?.image ?? "",
                     goToCategoryProductsListScreen),
               ),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 0.75,
-                mainAxisSpacing: AppSize.s8,
-                crossAxisSpacing: AppSize.s8,
-              ))
-        ],
-      ),
+              // the grid view of the subcategories
+              BlocBuilder<CategoriesCubit, CategoriesState>(
+                buildWhen: (previous, current) {
+                  if (current is SubCategoriesErrorState ||
+                      current is SubCategoriesSuccessState ||
+                      current is SubCategoriesLoadingState) {
+                    return true;
+                  }
+                  return false;
+                },
+                builder: (context, state) {
+                  if(state is SubCategoriesSuccessState){
+                    if((state.subCategoriesEntity.data?.length??0)==0){
+                      return SliverToBoxAdapter(child: Center(child: Text("No sub categories"),));
+                    }else {
+                      return SliverGrid(
+                          delegate: SliverChildBuilderDelegate(
+                            childCount: state.subCategoriesEntity.data?.length??0,
+                                (context, index) => SubCategoryItem(
+                                state.subCategoriesEntity.data![index].name??"",
+                                ImageAssets.subcategoryCardImage,
+                                goToCategoryProductsListScreen),
+                          ),
+                          gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1/1.8,
+                            mainAxisSpacing: AppSize.s8,
+                            crossAxisSpacing: AppSize.s8,
+                          ));
+                    }
+                  }
+                  if(state is SubCategoriesErrorState){
+                    return SliverToBoxAdapter(child: Center(child: Text(state.error),));
+                  }
+                  return SliverToBoxAdapter(child: Center(child: CircularProgressIndicator(),));
+                },
+              )
+            ],
+          ),
+        );
+      },
     );
   }
 

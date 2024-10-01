@@ -1,3 +1,4 @@
+import 'package:ecommerce_app/core/prefrences/PrefsHandler.dart';
 import 'package:ecommerce_app/core/resources/assets_manager.dart';
 import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/font_manager.dart';
@@ -23,7 +24,8 @@ class ProfileTabState extends State<ProfileTab> {
   bool isPasswordReadOnly = true;
   bool isMobileNumberReadOnly = true;
   bool isAddressReadOnly = true;
-
+  String name = PrefsHandler.getName();
+  String email = PrefsHandler.getEmail();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -43,12 +45,12 @@ class ProfileTabState extends State<ProfileTab> {
               ),
               SizedBox(height: AppSize.s20.h),
               Text(
-                'Welcome, Mohamed',
+                'Welcome, $name',
                 style: getSemiBoldStyle(
                     color: ColorManager.primary, fontSize: FontSize.s18),
               ),
               Text(
-                'mohamed.N@gmail.com',
+                email,
                 style: getRegularStyle(
                     color: ColorManager.primary.withOpacity(.5),
                     fontSize: FontSize.s14),
@@ -61,7 +63,7 @@ class ProfileTabState extends State<ProfileTab> {
                 hint: 'Enter your full name',
                 label: 'Full Name',
                 controller:
-                    TextEditingController(text: 'Mohamed Mohamed Nabil'),
+                    TextEditingController(text: name),
                 labelTextStyle: getMediumStyle(
                     color: ColorManager.primary, fontSize: FontSize.s18),
                 suffixIcon: IconButton(
@@ -84,7 +86,7 @@ class ProfileTabState extends State<ProfileTab> {
                 backgroundColor: ColorManager.white,
                 hint: 'Enter your email address',
                 label: 'E-mail address',
-                controller: TextEditingController(text: 'mohamed.N@gmail.com'),
+                controller: TextEditingController(text: email),
                 labelTextStyle: getMediumStyle(
                     color: ColorManager.primary, fontSize: FontSize.s18),
                 suffixIcon: IconButton(

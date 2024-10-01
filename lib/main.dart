@@ -1,10 +1,21 @@
+import 'package:ecommerce_app/core/DI/DI.dart';
+import 'package:ecommerce_app/core/network/api_manager.dart';
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
+import 'package:ecommerce_app/features/auth/sign_up_screen/data/models/SignUpResponse/SignUpReponse.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'core/bloc_observer.dart';
+import 'core/prefrences/PrefsHandler.dart';
 import 'core/routes_manager/route_generator.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  configureDependencies();
+  ApiManager.init();
+  Bloc.observer = MyBlocObserver();
+  await PrefsHandler.init();
   runApp(const MainApp());
 }
 
@@ -14,14 +25,16 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(430, 932),
+      designSize: Size(430, 932),
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (context, child) => MaterialApp(
+        home:child ,
         debugShowCheckedModeBanner: false,
-        home: child,
         onGenerateRoute: RouteGenerator.getRoute,
-        initialRoute: Routes.signInRoute,
+        initialRoute: PrefsHandler.getToken().isNotEmpty
+            ?Routes.mainRoute
+            :Routes.signInRoute,
       ),
     );
   }

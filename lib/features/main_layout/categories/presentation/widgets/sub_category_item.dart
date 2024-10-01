@@ -2,6 +2,7 @@ import 'package:ecommerce_app/core/resources/color_manager.dart';
 import 'package:ecommerce_app/core/resources/styles_manager.dart';
 import 'package:ecommerce_app/core/resources/values_manager.dart';
 import 'package:ecommerce_app/core/routes_manager/routes.dart';
+import 'package:ecommerce_app/features/main_layout/categories/presentation/manager/categories_cubit.dart';
 import 'package:flutter/material.dart';
 
 class SubCategoryItem extends StatelessWidget {
@@ -13,8 +14,8 @@ class SubCategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, Routes.productsScreenRoute),
-      overlayColor: WidgetStateProperty.all(Colors.transparent),
+      onTap: () => Navigator.pushNamed(context, Routes.productsScreenRoute,
+          arguments: CategoriesCubit.get(context).selectedCategory),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [

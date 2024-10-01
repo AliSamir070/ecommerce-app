@@ -102,6 +102,9 @@ class _BuildTextFieldState extends State<BuildTextField> {
                 FocusScope.of(context).requestFocus(widget.nextFocus);
               }
             },
+            onFieldSubmitted: (value) {
+              FocusScope.of(context).requestFocus(widget.nextFocus);
+            },
             textInputAction: widget.nextFocus == null
                 ? TextInputAction.done
                 : TextInputAction.next,

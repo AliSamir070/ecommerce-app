@@ -24,7 +24,7 @@ class CategoryCardItem extends StatelessWidget {
         child: Stack(
           children: [
             // Background image for the category
-            Image.asset(
+            Image.network(
               image,
               fit: BoxFit.cover,
               width: double.infinity,

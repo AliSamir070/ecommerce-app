@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'color_manager.dart';
 
 class AppConstants {
   static const String delete = "Delete";
   static const String searchHint = "what do you search for?";
   static const String addToCart = "Add to Cart";
-
+  static const String baseUrl = "https://ecommerce.routemisr.com";
+  static showToast(String message){
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: ColorManager.primary,
+        textColor: Colors.white,
+        fontSize: 16.0
+    );
+  }
   static List<Map<String, dynamic>> favoriteProducts = [
     {
       "title": "Nike Air Jordon",
