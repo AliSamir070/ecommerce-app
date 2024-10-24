@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:ecommerce_app/core/network/api_manager.dart';
 import 'package:ecommerce_app/core/network/endpoint.dart';
 import 'package:ecommerce_app/core/prefrences/PrefsHandler.dart';
+import 'package:ecommerce_app/features/products_screen/data/model/AddCart/AddCartModel.dart';
 import 'package:ecommerce_app/features/products_screen/data/model/AddWishlistModel/AddWishlistModel.dart';
 
 import 'package:ecommerce_app/features/products_screen/data/model/ProductsResponseModel.dart';
@@ -34,6 +35,20 @@ class ProductsDaoApiImpl extends ProductsDao{
         "token":PrefsHandler.getToken()
       });
       return Left(AddWishlistModel.fromJson(response.data));
+    }catch(error){
+      return Right(error.toString());
+    }
+  }
+
+  @override
+  Future<Either<AddCartModel, String>> AddToCart(String id) async{
+    try{
+      var response = await apiManager.PostRequestRawData(Endpoint.cartEndpoint,body: {
+        "productId":id
+      },headers: {
+        "token":PrefsHandler.getToken()
+      });
+      return Left(AddCartModel.fromJson(response.data));
     }catch(error){
       return Right(error.toString());
     }

@@ -9,6 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/bloc_observer.dart';
 import 'core/prefrences/PrefsHandler.dart';
 import 'core/routes_manager/route_generator.dart';
+import 'features/products_screen/presentation/manager/products_cubit.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,7 +17,9 @@ void main() async{
   ApiManager.init();
   Bloc.observer = MyBlocObserver();
   await PrefsHandler.init();
-  runApp(const MainApp());
+  runApp(BlocProvider(
+      create: (context) => getIt<ProductsCubit>(),
+      child: const MainApp()));
 }
 
 class MainApp extends StatelessWidget {
@@ -24,6 +27,7 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("token : ${PrefsHandler.getToken()}");
     return ScreenUtilInit(
       designSize: Size(430, 932),
       minTextAdapt: true,
